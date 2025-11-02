@@ -1,0 +1,116 @@
+# Default values for teamspeak
+replicaCount: 1
+
+image:
+  repository: teamspeak
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# TeamSpeak Server Configuration
+teamspeak:
+  license: accept
+  serverName: "My TeamSpeak Server"
+  serverPassword: ""
+  serverAdmin: "serveradmin"
+  extraEnv: []
+
+# Service configuration
+service:
+  type: LoadBalancer
+  # DNS hostname for the service (for external-dns)
+  hostname: ""
+  # Example: "ts.dev0ps.app"
+  
+  # Fixed IP address (optional)
+  loadBalancerIP: ""
+  
+  # Service annotations (for external-dns, metallb, cloud providers)
+  annotations: {}
+  # Example annotations:
+  # external-dns.alpha.kubernetes.io/hostname: ts.dev0ps.app
+  # metallb.universe.tf/address-pool: default
+  
+  # Voice port (UDP) - main TeamSpeak port
+  voice:
+    port: 9987
+    protocol: UDP
+    nodePort: null
+  
+  # ServerQuery port (TCP) - admin interface
+  serverquery:
+    port: 10011
+    protocol: TCP
+    nodePort: null
+  
+  # FileTransfer port (TCP) - file uploads/downloads
+  filetransfer:
+    port: 30033
+    protocol: TCP
+    nodePort: null
+
+# Ingress for TCP ports (optional, for ServerQuery and FileTransfer)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  
+  # Hostname for ingress
+  host: ""
+  # Example: ts.dev0ps.app
+  
+  tls:
+    enabled: false
+    secretName: ""
+
+# Persistence for TeamSpeak data
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  existingClaim: ""
+  annotations: {}
+
+# Resource limits
+resources:
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 9987
+
+securityContext:
+  runAsUser: 9987
+  runAsNonRoot: true
+
+# Health checks (using ServerQuery TCP port)
+livenessProbe:
+  tcpSocket:
+    port: serverquery
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  tcpSocket:
+    port: serverquery
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3

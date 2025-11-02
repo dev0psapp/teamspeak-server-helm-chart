@@ -1,0 +1,47 @@
+TeamSpeak 3 Server has been installed!
+
+1. Get the server admin token:
+
+   kubectl logs -n {{ .Release.Namespace }} deployment/{{ include "teamspeak.fullname" . }} | grep "token="
+
+2. Connection Information:
+
+{{- if .Values.service.hostname }}
+   
+   DNS Hostname: {{ .Values.service.hostname }}
+   
+   Connect with TeamSpeak client:
+   - Server: {{ .Values.service.hostname }}:{{ .Values.service.voice.port }}
+   
+   {{- if eq .Values.service.type "LoadBalancer" }}
+   Wait for LoadBalancer IP to be assigned:
+   kubectl get svc -n {{ .Release.Namespace }} {{ include "teamspeak.fullname" . }} -w
+   
+   Make sure your DNS ({{ .Values.service.hostname }}) points to the LoadBalancer IP!
+   {{- end }}
+
+{{- else if eq .Values.service.type "LoadBalancer" }}
+   
+   Get LoadBalancer IP:
+   export SERVICE_IP=$(kubectl get svc -n {{ .Release.Namespace }} {{ include "teamspeak.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo "TeamSpeak Server: $SERVICE_IP:{{ .Values.service.voice.port }}"
+
+{{- else if eq .Values.service.type "NodePort" }}
+
+   export NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}')
+   export NODE_PORT=$(kubectl get svc -n {{ .Release.Namespace }} {{ include "teamspeak.fullname" . }} -o jsonpath='{.spec.ports[?(@.name=="voice")].nodePort}')
+   echo "TeamSpeak Server: $NODE_IP:$NODE_PORT"
+
+{{- else }}
+
+   kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "teamspeak.fullname" . }} 9987:9987
+
+{{- end }}
+
+3. Ports:
+   - Voice (UDP):        {{ .Values.service.voice.port }}
+   - ServerQuery (TCP):  {{ .Values.service.serverquery.port }}
+   - FileTransfer (TCP): {{ .Values.service.filetransfer.port }}
+
+4. View logs:
+   kubectl logs -n {{ .Release.Namespace }} deployment/{{ include "teamspeak.fullname" . }} -f

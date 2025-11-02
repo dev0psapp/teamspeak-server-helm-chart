@@ -1,0 +1,16 @@
+apiVersion: v2
+name: teamspeak
+description: A Helm chart for TeamSpeak 3 Server with DNS support
+type: application
+version: 1.1.1
+appVersion: "latest"
+keywords:
+  - teamspeak
+  - voip
+  - voice
+home: https://teamspeak.com
+sources:
+  - https://github.com/TeamSpeak-Systems/teamspeak-linux
+maintainers:
+  - name: dev0ps
+    email: admin@dev0ps.app

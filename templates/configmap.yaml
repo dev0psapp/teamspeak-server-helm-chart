@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "teamspeak.fullname" . }}
+  labels:
+    {{- include "teamspeak.labels" . | nindent 4 }}
+data:
+  retrieve-token.sh: |
+    #!/bin/sh
+    echo "==================================="
+    echo "TeamSpeak 3 Server Admin Token"
+    echo "==================================="
+    echo ""
+    echo "To get your server admin token, run:"
+    echo "kubectl logs -n {{ .Release.Namespace }} deployment/{{ include "teamspeak.fullname" . }} | grep -A 5 'ServerAdmin privilege key created'"
+    echo ""
+    echo "Or check the logs manually for the token"
+    echo "==================================="
