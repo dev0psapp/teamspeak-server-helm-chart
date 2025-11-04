@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: teamspeak
+  repository: docker.io/teamspeak/ts3server
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -10,13 +10,50 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# Service Account
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
 # TeamSpeak Server Configuration
 teamspeak:
-  license: accept
+  # License acceptance - REQUIRED: set to "accept" to accept the TeamSpeak license
+  license: ""
+
+  # Server display name
   serverName: "My TeamSpeak Server"
+
+  # Server password (leave empty for no password - NOT RECOMMENDED for production)
   serverPassword: ""
+
+  # ServerQuery admin username
   serverAdmin: "serveradmin"
+
+  # ServerQuery admin password (auto-generated if empty)
+  serverQueryPassword: ""
+
+  # Default voice port (default: 9987)
+  defaultVoicePort: ""
+
+  # Query whitelist (comma-separated IPs, e.g., "127.0.0.1,192.168.1.1")
+  queryWhitelist: ""
+
+  # Query blacklist (comma-separated IPs)
+  queryBlacklist: ""
+
+  # Additional environment variables (key-value pairs)
+  # See: https://teamspeak.com/en/downloads/#server
   extraEnv: []
+  # Example:
+  # - name: TS3SERVER_QUERY_PROTOCOLS
+  #   value: "raw,ssh"
+  # - name: TS3SERVER_DB_SQLCREATEPATH
+  #   value: "create_sqlite"
 
 # Service configuration
 service:
@@ -93,10 +130,21 @@ podAnnotations: {}
 
 podSecurityContext:
   fsGroup: 9987
+  # Uncomment for stricter security
+  # runAsNonRoot: true
+  # seccompProfile:
+  #   type: RuntimeDefault
 
 securityContext:
   runAsUser: 9987
   runAsNonRoot: true
+  # Recommended: Enable these for enhanced security
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  # Note: readOnlyRootFilesystem requires TeamSpeak to use tmpfs/emptyDir for temp files
+  # readOnlyRootFilesystem: true
 
 # Health checks (using ServerQuery TCP port)
 livenessProbe:
