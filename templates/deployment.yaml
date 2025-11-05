@@ -26,6 +26,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "teamspeak.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -50,6 +51,26 @@ spec:
         {{- if .Values.teamspeak.serverName }}
         - name: TS3SERVER_SERVERQUERY_NAME
           value: {{ .Values.teamspeak.serverName | quote }}
+        {{- end }}
+        {{- if .Values.teamspeak.serverPassword }}
+        - name: TS3SERVER_SERVER_PASSWORD
+          value: {{ .Values.teamspeak.serverPassword | quote }}
+        {{- end }}
+        {{- if .Values.teamspeak.serverQueryPassword }}
+        - name: TS3SERVER_SERVERQUERY_PASSWORD
+          value: {{ .Values.teamspeak.serverQueryPassword | quote }}
+        {{- end }}
+        {{- if .Values.teamspeak.defaultVoicePort }}
+        - name: TS3SERVER_DEFAULT_VOICE_PORT
+          value: {{ .Values.teamspeak.defaultVoicePort | quote }}
+        {{- end }}
+        {{- if .Values.teamspeak.queryWhitelist }}
+        - name: TS3SERVER_QUERY_IP_WHITELIST
+          value: {{ .Values.teamspeak.queryWhitelist | quote }}
+        {{- end }}
+        {{- if .Values.teamspeak.queryBlacklist }}
+        - name: TS3SERVER_QUERY_IP_BLACKLIST
+          value: {{ .Values.teamspeak.queryBlacklist | quote }}
         {{- end }}
         {{- with .Values.teamspeak.extraEnv }}
         {{- toYaml . | nindent 8 }}
