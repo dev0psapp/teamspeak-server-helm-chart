@@ -1,4 +1,8 @@
 apiVersion: v2
+annotations:
+  artifacthub.io/signKey: |
+    fingerprint: 7356F4F0F949F07AB053818320C3C9CB2B7E1B00
+    url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
 name: teamspeak
 description: A Helm chart for TeamSpeak 3 Server with DNS support
 type: application
@@ -11,6 +15,10 @@ keywords:
 home: https://teamspeak.com
 sources:
   - https://github.com/TeamSpeak-Systems/teamspeak-linux
+artifacthub.io/license: "Apache-2.0"
+artifacthub.io/links: |
+  - name: Chart Source
+    url: https://github.com/teamspeak/ts3-docker-compose
 maintainers:
   - name: dev0ps
     email: admin@dev0ps.app
