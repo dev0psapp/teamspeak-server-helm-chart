@@ -1,15 +1,20 @@
 name: Release Chart
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Chart.yaml' # Trigger only when Chart version/content changes
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
 
 jobs:
   release:
-    # Permissions required to push to the repository
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -24,13 +29,48 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Bump Version, Tag and Push
+        id: bump
+        run: |
+          # 1. Read current version
+          current_version=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          echo "Current version: $current_version"
+          
+          # 2. Calculate new version
+          IFS='.' read -r major minor patch <<< "$current_version"
+          
+          if [ "${{ inputs.bump }}" == "major" ]; then
+            major=$((major + 1)); minor=0; patch=0
+          elif [ "${{ inputs.bump }}" == "minor" ]; then
+            minor=$((minor + 1)); patch=0
+          else
+            patch=$((patch + 1))
+          fi
+          
+          new_version="$major.$minor.$patch"
+          echo "New version: $new_version"
+          
+          # 3. Update Chart.yaml
+          sed -i "s/^version: .*/version: $new_version/" Chart.yaml
+          
+          # 4. Commit and Push to main
+          git add Chart.yaml
+          git commit -m "Bump chart version to $new_version [skip ci]"
+          git push origin main
+          
+          # 5. Create and Push Tag
+          git tag "v$new_version"
+          git push origin "v$new_version"
+          
+          # Export version for next steps
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
       - name: Install Helm
         uses: azure/setup-helm@v3
 
-      - name: Package and Publish
+      - name: Package and Publish to GitHub Pages
         run: |
-          # 1. Package the chart (from main branch content)
-          # We save it to a temporary location first
+          # 1. Package the chart (it now uses the new version in Chart.yaml)
           mkdir -p /tmp/chart-package
           helm package . -d /tmp/chart-package
 
@@ -38,19 +78,19 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
 
-          # 3. Copy the new package(s) to the repo
+          # 3. Copy the new package
           cp /tmp/chart-package/*.tgz .
 
-          # 4. Update the repository index
-          # This ensures the new package is listed in index.yaml
+          # 4. Update index.yaml
+          # This command reads the metadata from the .tgz package (which comes from Chart.yaml)
+          # So it will automatically update the 'sources', 'home', and 'version' in index.yaml
           helm repo index . --url https://dev0psapp.github.io/teamspeak-server-helm-chart/ --merge index.yaml
 
-          # 5. Commit and Push changes
+          # 5. Commit and Push to gh-pages
           git add .
-          # Check if there are changes before committing to avoid errors
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "Update Helm repository [skip ci]"
+            git commit -m "Release ${{ steps.bump.outputs.version }}"
             git push origin gh-pages
           fi
