@@ -7,7 +7,30 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2025-12-02T12:59:24.499150953Z"
+    created: "2025-12-02T13:06:30.965636313Z"
+    description: A Helm chart for TeamSpeak 3 Server with DNS support
+    digest: 189768f96a4452abe3eb0dabde1f212cbca6f1a639b1316b110ce04f0262fe04
+    keywords:
+    - teamspeak
+    - voip
+    - voice
+    maintainers:
+    - email: admin@dev0ps.app
+      name: dev0ps
+    name: teamspeak
+    sources:
+    - https://github.com/dev0psapp/teamspeak-server-helm-chart
+    type: application
+    urls:
+    - https://dev0psapp.github.io/teamspeak-server-helm-chart/teamspeak-1.1.4.tgz
+    version: 1.1.4
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: 7356F4F0F949F07AB053818320C3C9CB2B7E1B00
+        url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
+    apiVersion: v2
+    appVersion: latest
+    created: "2025-12-02T13:06:30.965120447Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: bae51d414cdb438a998fc135912833c069827062bb4af2a6e789e5d94d8c95d3
     keywords:
@@ -30,7 +53,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2025-12-02T12:59:24.496837201Z"
+    created: "2025-12-02T13:06:30.964528908Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: cacd60b4d5f0317aebb778684309cc850049659946b42da04ed7b25e8fd51afb
     keywords:
@@ -53,7 +76,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2025-12-02T12:59:24.494313256Z"
+    created: "2025-12-02T13:06:30.964006038Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: 5417a755d4d4e13ed7c8f33865d302a6935486023917667fc93364367732bdc4
     home: https://teamspeak.com
@@ -71,4 +94,4 @@ entries:
     urls:
     - https://dev0psapp.github.io/teamspeak-server-helm-chart/teamspeak-1.1.1.tgz
     version: 1.1.1
-generated: "2025-12-02T12:59:24.489844348Z"
+generated: "2025-12-02T13:06:30.963252006Z"
