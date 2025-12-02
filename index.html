@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeamSpeak Server Helm Chart Repository</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; line-height: 1.6; }
+        h1 { color: #333; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>TeamSpeak Server Helm Chart Repository</h1>
+    <p>This page serves as the base URL for the TeamSpeak Server Helm Chart repository.</p>
+    <p>To add this repository to your Helm client, use the following command:</p>
+    <pre><code>helm repo add teamspeak https://dev0psapp.github.io/teamspeak-server-helm-chart/</code></pre>
+    <p>You can then search for and install charts:</p>
+    <pre><code>helm repo update</code></pre>
+    <pre><code>helm search repo teamspeak</code></pre>
+    <pre><code>helm install my-teamspeak teamspeak/teamspeak</code></pre>
+    <p>
+        For more details, you can view the raw <a href="index.yaml">Helm repository index file</a> or download the <a href="teamspeak-1.1.1.tgz">TeamSpeak chart package</a>.
+    </p>
+    <p>
+        The source code for this chart is available on <a href="https://github.com/dev0psapp/teamspeak-server-helm-chart">GitHub</a>.
+    </p>
+</body>
+</html>
