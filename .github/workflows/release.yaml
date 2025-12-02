@@ -1,0 +1,56 @@
+name: Release Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Chart.yaml' # Trigger only when Chart version/content changes
+
+jobs:
+  release:
+    # Permissions required to push to the repository
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Package and Publish
+        run: |
+          # 1. Package the chart (from main branch content)
+          # We save it to a temporary location first
+          mkdir -p /tmp/chart-package
+          helm package . -d /tmp/chart-package
+
+          # 2. Switch to gh-pages branch
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # 3. Copy the new package(s) to the repo
+          cp /tmp/chart-package/*.tgz .
+
+          # 4. Update the repository index
+          # This ensures the new package is listed in index.yaml
+          helm repo index . --url https://dev0psapp.github.io/teamspeak-server-helm-chart/ --merge index.yaml
+
+          # 5. Commit and Push changes
+          git add .
+          # Check if there are changes before committing to avoid errors
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update Helm repository [skip ci]"
+            git push origin gh-pages
+          fi
