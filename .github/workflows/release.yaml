@@ -78,8 +78,10 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
 
-          # 3. Copy the new package
+          # 3. Copy the new package and metadata
           cp /tmp/chart-package/*.tgz .
+          cp "$GITHUB_WORKSPACE/artifacthub-repo.yml" . || true
+          cp "$GITHUB_WORKSPACE/README.md" . || true
 
           # 4. Update index.yaml
           # This command reads the metadata from the .tgz package (which comes from Chart.yaml)
