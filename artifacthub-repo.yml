@@ -10,3 +10,6 @@
 # NOT apply to ownership claim operations, which are processed immediately.
 #
 repositoryID: 4e796bf5-f1dd-4804-97bb-0a5716028bc9
+owners:
+  - name: gergosofalvi
+    email: hello@geri.app
