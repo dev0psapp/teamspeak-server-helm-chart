@@ -1,6 +1,11 @@
 name: Release Chart
 
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'Chart.yaml'
   workflow_dispatch:
     inputs:
       bump:
@@ -39,9 +44,14 @@ jobs:
           # 2. Calculate new version
           IFS='.' read -r major minor patch <<< "$current_version"
           
-          if [ "${{ inputs.bump }}" == "major" ]; then
+          BUMP_TYPE="${{ inputs.bump }}"
+          if [ -z "$BUMP_TYPE" ]; then
+            BUMP_TYPE="patch"
+          fi
+          
+          if [ "$BUMP_TYPE" == "major" ]; then
             major=$((major + 1)); minor=0; patch=0
-          elif [ "${{ inputs.bump }}" == "minor" ]; then
+          elif [ "$BUMP_TYPE" == "minor" ]; then
             minor=$((minor + 1)); patch=0
           else
             patch=$((patch + 1))
