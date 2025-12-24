@@ -6,8 +6,8 @@ annotations:
 name: teamspeak
 description: A Helm chart for TeamSpeak 3 Server with DNS support
 type: application
-version: 1.1.4
-appVersion: "latest"
+version: 1.1.5
+appVersion: "1.1.5"
 keywords:
   - teamspeak
   - voip
@@ -17,7 +17,7 @@ sources:
 artifacthub.io/license: "Apache-2.0"
 artifacthub.io/links: |
   - name: Chart Source
-    url: https://github.com/teamspeak/ts3-docker-compose
+    url: https://github.com/dev0psapp/teamspeak-server-helm-chart
 maintainers:
   - name: dev0ps
     email: admin@dev0ps.app

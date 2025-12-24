@@ -2,9 +2,9 @@
 replicaCount: 1
 
 image:
-  repository: teamspeak
+  repository: harbor.dev0ps.app/dev0psapp/teamspeak-server-helm-chart
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "1.1.5"
 
 imagePullSecrets: []
 nameOverride: ""

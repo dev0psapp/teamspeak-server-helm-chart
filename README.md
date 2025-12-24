@@ -4,17 +4,16 @@
 
 A Helm chart for TeamSpeak 3 Server with DNS support
 
-**Homepage:** <https://teamspeak.com>
 
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| dev0ps | <admin@dev0ps.app> |  |
+| dev0ps | <admin@dev0ps.app> | https://dev0ps.app |
 
 ## Source Code
 
-* <https://github.com/TeamSpeak-Systems/teamspeak-linux>
+* <https://github.com/dev0psapp/teamspeak-server-helm-chart>
 
 ## Values
 
