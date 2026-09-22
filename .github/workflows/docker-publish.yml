@@ -74,24 +74,30 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # GHCR packages created by Actions are private until visibility is changed.
-      # Artifact Hub pulls anonymously, so the package must be public.
+      # Org GHCR packages are private by default. GITHUB_TOKEN can push the
+      # image but often cannot change visibility; a classic PAT in
+      # PACKAGES_TOKEN (write:packages) can. Anonymous pulls need public.
       - name: Make package public
         if: github.event_name != 'pull_request'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
         run: |
           pkg="${{ steps.image.outputs.package }}"
-          owner="${{ github.repository_owner }}"
+          owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          if [ -n "${PACKAGES_TOKEN}" ]; then
+            export GH_TOKEN="${PACKAGES_TOKEN}"
+          fi
           for i in 1 2 3 4 5 6; do
-            if gh api --method PATCH "/orgs/${owner}/packages/container/${pkg}" -f visibility=public; then
+            if gh api --method PATCH "/orgs/${owner}/packages/container/${pkg}" --field visibility=public; then
               echo "Package ${owner}/${pkg} is public"
               exit 0
             fi
-            echo "Package not visible yet, retry ${i}/6"
+            echo "Visibility update failed, retry ${i}/6"
             sleep 10
           done
-          echo "Could not set ${owner}/${pkg} to public. Set it once in the package settings."
+          echo "::warning::Could not set ${owner}/${pkg} to public. Open the package settings and choose Change visibility → Public. Artifact Hub cannot scan a private image."
           exit 1
 
       - name: Sign the published Docker image
