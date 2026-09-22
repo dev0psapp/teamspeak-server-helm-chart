@@ -39,34 +39,40 @@ jobs:
         run: |
           # 1. Read current version
           current_version=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          previous_version=$(git show HEAD~1:Chart.yaml | grep '^version:' | awk '{print $2}')
           echo "Current version: $current_version"
-          
-          # 2. Calculate new version
-          IFS='.' read -r major minor patch <<< "$current_version"
-          
+          echo "Previous version: $previous_version"
+
           BUMP_TYPE="${{ inputs.bump }}"
-          if [ -z "$BUMP_TYPE" ]; then
-            BUMP_TYPE="patch"
-          fi
-          
-          if [ "$BUMP_TYPE" == "major" ]; then
-            major=$((major + 1)); minor=0; patch=0
-          elif [ "$BUMP_TYPE" == "minor" ]; then
-            minor=$((minor + 1)); patch=0
+
+          # Keep a version that was set on purpose in this commit.
+          # Automatic patch bumps still run when Chart.yaml version did not change.
+          if [ -z "$BUMP_TYPE" ] && [ "$current_version" != "$previous_version" ]; then
+            new_version="$current_version"
+            echo "Chart version already set to $new_version, skipping bump"
           else
-            patch=$((patch + 1))
+            if [ -z "$BUMP_TYPE" ]; then
+              BUMP_TYPE="patch"
+            fi
+
+            IFS='.' read -r major minor patch <<< "$current_version"
+
+            if [ "$BUMP_TYPE" == "major" ]; then
+              major=$((major + 1)); minor=0; patch=0
+            elif [ "$BUMP_TYPE" == "minor" ]; then
+              minor=$((minor + 1)); patch=0
+            else
+              patch=$((patch + 1))
+            fi
+
+            new_version="$major.$minor.$patch"
+            echo "New version: $new_version"
+
+            sed -i "s/^version: .*/version: $new_version/" Chart.yaml
+            git add Chart.yaml
+            git commit -m "Bump chart version to $new_version [skip ci]"
+            git push origin main
           fi
-          
-          new_version="$major.$minor.$patch"
-          echo "New version: $new_version"
-          
-          # 3. Update Chart.yaml
-          sed -i "s/^version: .*/version: $new_version/" Chart.yaml
-          
-          # 4. Commit and Push to main
-          git add Chart.yaml
-          git commit -m "Bump chart version to $new_version [skip ci]"
-          git push origin main
           
           # 5. Create and Push Tag
           git tag "v$new_version"
