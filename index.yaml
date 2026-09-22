@@ -6,8 +6,31 @@ entries:
         fingerprint: 7356F4F0F949F07AB053818320C3C9CB2B7E1B00
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
+    appVersion: 1.2.0
+    created: "2026-09-22T13:22:50.601163766Z"
+    description: A Helm chart for TeamSpeak 3 Server with DNS support
+    digest: 122fd5542e3ba0553fe94d5c95637fbf34fd1535fc68b4bb641cd5c7a833a15b
+    keywords:
+    - teamspeak
+    - voip
+    - voice
+    maintainers:
+    - email: admin@dev0ps.app
+      name: dev0ps
+    name: teamspeak
+    sources:
+    - https://github.com/dev0psapp/teamspeak-server-helm-chart
+    type: application
+    urls:
+    - https://dev0psapp.github.io/teamspeak-server-helm-chart/teamspeak-1.2.0.tgz
+    version: 1.2.0
+  - annotations:
+      artifacthub.io/signKey: |
+        fingerprint: 7356F4F0F949F07AB053818320C3C9CB2B7E1B00
+        url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
+    apiVersion: v2
     appVersion: 1.1.5
-    created: "2026-09-22T13:10:04.326483922Z"
+    created: "2026-09-22T13:22:50.600591758Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: ccd63b6a2f84cc3fd25a16947dcd6f0d3f43cab4a48762abcec39ac39db39f1d
     keywords:
@@ -30,7 +53,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: 1.1.5
-    created: "2026-09-22T13:10:04.326063516Z"
+    created: "2026-09-22T13:22:50.599814768Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: 149a3f2c556fc0f53171535029039390b97b4d7fd06423b16838462eadb2ecab
     keywords:
@@ -53,7 +76,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: 1.1.5
-    created: "2026-09-22T13:10:04.3256697Z"
+    created: "2026-09-22T13:22:50.599327947Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: a92fa11e0eeccf748f00c212e2deda0fef3b8084ac86929b71f942dbadf406c1
     keywords:
@@ -76,7 +99,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2026-09-22T13:10:04.325240851Z"
+    created: "2026-09-22T13:22:50.598831655Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: 189768f96a4452abe3eb0dabde1f212cbca6f1a639b1316b110ce04f0262fe04
     keywords:
@@ -99,7 +122,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2026-09-22T13:10:04.324838082Z"
+    created: "2026-09-22T13:22:50.598380866Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: bae51d414cdb438a998fc135912833c069827062bb4af2a6e789e5d94d8c95d3
     keywords:
@@ -122,7 +145,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2026-09-22T13:10:04.324433349Z"
+    created: "2026-09-22T13:22:50.597873454Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: cacd60b4d5f0317aebb778684309cc850049659946b42da04ed7b25e8fd51afb
     keywords:
@@ -145,7 +168,7 @@ entries:
         url: https://keys.openpgp.org/vks/v1/by-fingerprint/7356F4F0F949F07AB053818320C3C9CB2B7E1B00
     apiVersion: v2
     appVersion: latest
-    created: "2026-09-22T13:10:04.324002928Z"
+    created: "2026-09-22T13:22:50.597401021Z"
     description: A Helm chart for TeamSpeak 3 Server with DNS support
     digest: 5417a755d4d4e13ed7c8f33865d302a6935486023917667fc93364367732bdc4
     home: https://teamspeak.com
@@ -163,4 +186,4 @@ entries:
     urls:
     - https://dev0psapp.github.io/teamspeak-server-helm-chart/teamspeak-1.1.1.tgz
     version: 1.1.1
-generated: "2026-09-22T13:10:04.323458448Z"
+generated: "2026-09-22T13:22:50.596691749Z"
