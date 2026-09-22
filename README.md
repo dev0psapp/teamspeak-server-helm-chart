@@ -22,8 +22,8 @@ A Helm chart for TeamSpeak 3 Server with DNS support
 | affinity | object | `{}` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"teamspeak"` |  |
-| image.tag | string | `"latest"` |  |
+| image.repository | string | `"ghcr.io/dev0psapp/teamspeak-server-helm-chart"` |  |
+| image.tag | string | `"1.1.5"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |

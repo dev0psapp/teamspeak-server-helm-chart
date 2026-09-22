@@ -3,14 +3,13 @@ name: Docker
 on:
   push:
     branches: [ "main" ]
-    # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 env:
-  REGISTRY: harbor.dev0ps.app
-  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io
 
 jobs:
   build:
@@ -18,16 +17,23 @@ jobs:
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
+      - name: Resolve image name and tags
+        id: image
+        run: |
+          repo=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "name=${REGISTRY}/${repo}" >> "$GITHUB_OUTPUT"
+          app_version=$(grep '^appVersion:' Chart.yaml | awk '{print $2}' | tr -d '"')
+          chart_version=$(grep '^version:' Chart.yaml | awk '{print $2}' | tr -d '"')
+          echo "app_version=${app_version}" >> "$GITHUB_OUTPUT"
+          echo "chart_version=${chart_version}" >> "$GITHUB_OUTPUT"
+          echo "package=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
       - name: Install cosign
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@v3.5.0
@@ -37,19 +43,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log into registry ${{ env.REGISTRY }}
+      - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_SECRET }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ steps.image.outputs.name }}
+          tags: |
+            type=raw,value=${{ steps.image.outputs.app_version }}
+            type=raw,value=${{ steps.image.outputs.chart_version }}
+            type=sha
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -62,11 +74,26 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
+      # GHCR packages created by Actions are private until visibility is changed.
+      # Artifact Hub pulls anonymously, so the package must be public.
+      - name: Make package public
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pkg="${{ steps.image.outputs.package }}"
+          owner="${{ github.repository_owner }}"
+          for i in 1 2 3 4 5 6; do
+            if gh api --method PATCH "/orgs/${owner}/packages/container/${pkg}" -f visibility=public; then
+              echo "Package ${owner}/${pkg} is public"
+              exit 0
+            fi
+            echo "Package not visible yet, retry ${i}/6"
+            sleep 10
+          done
+          echo "Could not set ${owner}/${pkg} to public. Set it once in the package settings."
+          exit 1
+
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
         env:
